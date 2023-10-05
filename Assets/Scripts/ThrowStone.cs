@@ -98,7 +98,7 @@ public class ThrowStone : MonoBehaviour
         {
             isLeftndRight = !isLeftndRight;
         }
-        projectileArrow.rectTransform.localEulerAngles = resetAngle +new Vector3(0, transform.eulerAngles.y + currentAngle - 45f, 0);
+        projectileArrow.rectTransform.localEulerAngles = resetAngle + new Vector3(0, transform.eulerAngles.y + currentAngle - 45f, 0);
         currentPower += powerIncrement * Time.deltaTime;
 
         // 돌 발사 파워 최대, 최소값 제한
@@ -109,7 +109,7 @@ public class ThrowStone : MonoBehaviour
 
         // 현재 힘 = 슬라이더 업데이트
         powerSlider.value = currentPower;
-        
+
         // 포워드 변경
         currentDirection = Quaternion.Euler(0, transform.eulerAngles.y + currentAngle - 45f, 0) * Vector3.forward;
     }
