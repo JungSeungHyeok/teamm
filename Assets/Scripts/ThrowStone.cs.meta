@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 04b1e8dc13e2be64cb576c4e439d6651
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - stonePrefab: {instanceID: 0}
+  - currentStonePrefab: {instanceID: 0}
+  - powerSlider: {instanceID: 0}
+  - projectileArrow: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
