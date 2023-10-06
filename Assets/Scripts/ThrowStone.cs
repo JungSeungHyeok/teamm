@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 
 //// 나중에 쪼인트 생각하기
@@ -16,60 +17,37 @@ using System.Collections.Generic;
 
 public class ThrowStone : MonoBehaviour
 {
-    public GameObject stonePrefab;
+    public StoneManager stoneManager;
     public float throwSpeed = 10f;
-
-    // 추후 볼타입 변경 생각해서 리스트로변경 // 이미지x
-    public List<GameObject> stonePrefabs;
-    public GameObject currentStonePrefab;  // 현재 돌 프리팹
-    private int currentStoneIndex = 0;
 
     public Slider powerSlider;
     public float minPower = 10f;
     public float maxPower = 20f;
 
     public Image projectileArrow;
-
-    // 각도 및 파워 증가량 조절
     public float angleIncrement = 20f;
     public float powerIncrement = 20f;
 
     private float currentPower;
-
-    private Vector3 resetAngle;
     private float currentAngle = 0f;
-
     private Vector3 currentDirection;
-
-    private bool isLeftndRight = true; // 좌우조절
-
+    private bool isLeftAndRight = true; // 좌우조절
+    private Vector3 resetAngle;
     private GameObject previewStone;
+    public string arrowTag = "AngleArrow";
 
-
+    private bool isLeftndRight = true;
 
     private void Start()
     {
-        // 슬라이더 초기 설정
         powerSlider.minValue = minPower;
         powerSlider.maxValue = maxPower;
         currentPower = minPower;
         powerSlider.value = currentPower;
 
-        //유니티에서 수정한 화살표의 각도
         resetAngle = projectileArrow.transform.eulerAngles;
 
-        // 초기 돌 프맆
-        if (stonePrefabs.Count > 0)
-        {
-            currentStonePrefab = stonePrefabs[currentStoneIndex];
-        }
-        else
-        {
-            Debug.LogWarning("stonePrefabs 리스트가 비어 있음");
-        }
-
         CreatePreviewStone();
-        // 체인지투타입에서 구현하기 전에 테스트
     }
 
 
@@ -80,7 +58,7 @@ public class ThrowStone : MonoBehaviour
             Destroy(previewStone);
         }
 
-        previewStone = Instantiate(currentStonePrefab, transform.position, Quaternion.identity);
+        previewStone = stoneManager.CreateStone(transform.position, Quaternion.identity);
         Rigidbody rb = previewStone.GetComponent<Rigidbody>();
 
         if (rb != null)
@@ -98,7 +76,7 @@ public class ThrowStone : MonoBehaviour
         {
             isLeftndRight = !isLeftndRight;
         }
-        projectileArrow.rectTransform.localEulerAngles = resetAngle + new Vector3(0, transform.eulerAngles.y + currentAngle - 45f, 0);
+
         currentPower += powerIncrement * Time.deltaTime;
 
         // 돌 발사 파워 최대, 최소값 제한
@@ -112,7 +90,22 @@ public class ThrowStone : MonoBehaviour
 
         // 포워드 변경
         currentDirection = Quaternion.Euler(0, transform.eulerAngles.y + currentAngle - 45f, 0) * Vector3.forward;
+
+        // 화살표 회전 (새로운 코드 부분)
+        GameObject[] arrows = GameObject.FindGameObjectsWithTag("AngleArrow");
+        foreach (GameObject arrow in arrows)
+        {
+            if (arrow.transform.IsChildOf(transform)) // 플레이어의 자식 오브젝트인 경우에만 처리
+            {
+                RectTransform arrowRect = arrow.GetComponent<RectTransform>();
+                if (arrowRect != null)
+                {
+                    arrowRect.localEulerAngles = resetAngle + new Vector3(0, transform.eulerAngles.y + currentAngle - 45f, 0);
+                }
+            }
+        }
     }
+
 
     private void Update()
     {
@@ -125,33 +118,27 @@ public class ThrowStone : MonoBehaviour
         // 돌 타입 변경 테스트
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            ChangeStoneToType(0);
+            stoneManager.ChangeStoneToType(0);
             CreatePreviewStone();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            ChangeStoneToType(1);
+            stoneManager.ChangeStoneToType(1);
             CreatePreviewStone();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            ChangeStoneToType(2);
+            stoneManager.ChangeStoneToType(2);
             CreatePreviewStone();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            ChangeStoneToType(3);
+            stoneManager.ChangeStoneToType(3);
             CreatePreviewStone();
         }
     }
 
-    private void ChangeStoneToType(int index)
-    {
-        if (index < 0 || index >= stonePrefabs.Count) return;
-
-        currentStoneIndex = index;
-        currentStonePrefab = stonePrefabs[currentStoneIndex];
-    }
+    
 
     public void Throw(Vector3 direction)
     {
@@ -159,28 +146,18 @@ public class ThrowStone : MonoBehaviour
         // 아래 위치에서 변경
         CreatePreviewStone();
 
-
         if (previewStone != null)
         {
             Rigidbody rb = previewStone.GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.isKinematic = false;  // 물리 효과 활성화
-                // rb.AddForce(direction * currentPower, ForceMode.Impulse); // 물리적 힘 적용
             }
 
-            // 반사 적용
-            PhysicMaterial physicMat = new PhysicMaterial();
-            physicMat.bounciness = 1;
-            previewStone.GetComponent<Collider>().material = physicMat;
-
-            // 힘 다시 추가
-            rb.AddForce(direction * currentPower, ForceMode.Impulse); // 현재 파워를 날림
+            rb.AddForce(direction * currentPower, ForceMode.Impulse);
 
             previewStone = null;  // 기존 참조 제거
         }
-
-
 
     }
 }
