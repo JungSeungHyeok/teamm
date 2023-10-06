@@ -32,11 +32,11 @@ public class ScoreManager : MonoBehaviour
     private void FixedUpdate()
     {
         GameObject[] stones = GameObject.FindGameObjectsWithTag("Stone");
+        List<GameObject> stonesToDestroy = new List<GameObject>();
 
         foreach (GameObject stone in stones)
         {
             Rigidbody stoneRb = stone.GetComponent<Rigidbody>();
-
             if (stoneRb == null)
             {
                 continue;
@@ -49,38 +49,55 @@ public class ScoreManager : MonoBehaviour
             {
                 bool isInside = line.boxCollider.bounds.Contains(stone.transform.position);
 
+                // 디버그
+                //Debug.Log("IsInside: " + isInside + ", IsBelowThreshold: " + isBelowThreshold + ", Stone: " + stone.name);
+
                 if (!stoneInside.ContainsKey(stone))
                 {
                     stoneInside[stone] = false;
                 }
 
-                // 사각형 안에 들어가고 속도가 임계값 이하일 때
                 if (isInside && isBelowThreshold)
                 {
-                    if (!stoneInside[stone]) // 이전에 안에 들어있지 않았다면
+                    if (!stoneInside[stone])
                     {
-                        int scoreToAdd = line.score;  // 기본 점수로 시작
+                        int scoreToAdd = line.score;
+                        // 디버그
+                        //Debug.Log("Is Shiny Stone: " + IsShinyStone(stone));
 
-                        // 반짝돌이면 점수를 2배로
                         if (IsShinyStone(stone))
                         {
                             scoreToAdd *= 2;
                         }
 
-                        totalScore += scoreToAdd;  // 점수 추가
-
-                        Destroy(stone);  // 돌 파괴
-                        UpdateScoreText();  // 점수 업데이트
-                        stoneInside.Remove(stone);  // 상태 업데이트
-                        break;  // 반복문 탈출
+                        totalScore += scoreToAdd;
+                        stonesToDestroy.Add(stone);
+                        //stoneInside[stone] = true;  // 이 부분이 문제일 수 있음
+                        break;
                     }
 
-                    stoneInside[stone] = true;  // 안에 들어갔다는 상태를 true로 설정
+                     stoneInside[stone] = true;  // 여기로 이동
                 }
-                
+                else
+                {
+                    stoneInside[stone] = false; // 이 부분 추가
+                }
             }
         }
+
+        foreach (var stone in stonesToDestroy)
+        {
+            Destroy(stone);
+            stoneInside.Remove(stone); // 상태 업데이트
+        }
+
+        if (stonesToDestroy.Count > 0)
+        {
+            UpdateScoreText();
+        }
     }
+
+
 
 
 
