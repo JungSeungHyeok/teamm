@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+//
 public class ScoreManager : MonoBehaviour
 {
     [System.Serializable]
@@ -15,24 +15,18 @@ public class ScoreManager : MonoBehaviour
     public float stopThreshold = 0.1f;
     public TextMeshProUGUI scoreText;
 
-    private int totalScore = 0;
-    private Dictionary<GameObject, bool> stoneInside = new Dictionary<GameObject, bool>();
-    // 리스트보다 딕셔너리가 나은듯
-
-    public bool IsShinyStone(GameObject stone)
-    {
-        return stone.CompareTag("ShinyStone");// 반짝돌인지 확인
-    }
+    public int totalScore = 0;
+    private Dictionary<GameObject, int> stoneCurrentScore = new Dictionary<GameObject, int>();
 
     private void Start()
     {
+        
         UpdateScoreText();
     }
 
     private void FixedUpdate()
     {
         GameObject[] stones = GameObject.FindGameObjectsWithTag("Stone");
-        List<GameObject> stonesToDestroy = new List<GameObject>();
 
         foreach (GameObject stone in stones)
         {
@@ -45,61 +39,34 @@ public class ScoreManager : MonoBehaviour
             float speed = stoneRb.velocity.magnitude;
             bool isBelowThreshold = speed < stopThreshold;
 
-            foreach (ScoreLineInfo line in scoreLines)
+            if (isBelowThreshold)
             {
-                bool isInside = line.boxCollider.bounds.Contains(stone.transform.position);
+                int currentStoneScore = 0;
 
-                // 디버그
-                //Debug.Log("IsInside: " + isInside + ", IsBelowThreshold: " + isBelowThreshold + ", Stone: " + stone.name);
-
-                if (!stoneInside.ContainsKey(stone))
+                foreach (ScoreLineInfo line in scoreLines)
                 {
-                    stoneInside[stone] = false;
-                }
+                    bool isInside = line.boxCollider.bounds.Contains(stone.transform.position);
 
-                if (isInside && isBelowThreshold)
-                {
-                    if (!stoneInside[stone])
+                    if (isInside)
                     {
-                        int scoreToAdd = line.score;
-                        // 디버그
-                        //Debug.Log("Is Shiny Stone: " + IsShinyStone(stone));
-
-                        if (IsShinyStone(stone))
-                        {
-                            scoreToAdd *= 2;
-                        }
-
-                        totalScore += scoreToAdd;
-                        stonesToDestroy.Add(stone);
-                        //stoneInside[stone] = true;  // 이 부분이 문제일 수 있음
+                        currentStoneScore = line.score;
                         break;
                     }
+                }
 
-                     stoneInside[stone] = true;  // 여기로 이동
-                }
-                else
+                if (!stoneCurrentScore.ContainsKey(stone))
                 {
-                    stoneInside[stone] = false; // 이 부분 추가
+                    stoneCurrentScore[stone] = 0;
                 }
+
+                totalScore += currentStoneScore - stoneCurrentScore[stone];
+                stoneCurrentScore[stone] = currentStoneScore;
             }
         }
 
-        foreach (var stone in stonesToDestroy)
-        {
-            Destroy(stone);
-            stoneInside.Remove(stone); // 상태 업데이트
-        }
-
-        if (stonesToDestroy.Count > 0)
-        {
-            UpdateScoreText();
-        }
+        UpdateScoreText();
+        UpdateTotalScore(0);
     }
-
-
-
-
 
     private void UpdateScoreText()
     {
@@ -108,5 +75,10 @@ public class ScoreManager : MonoBehaviour
             scoreText.text = "Score: " + totalScore;
         }
     }
-}
 
+    public void UpdateTotalScore(int newScore) // 다른 씬에 점수 전달
+    {
+        totalScore += newScore;
+        PlayerPrefs.SetInt("TotalScore", totalScore);
+    }
+}

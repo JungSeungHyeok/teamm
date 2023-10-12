@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Wall
   - Stone
-  - ShinyStone
+  - Wall
   - AngleArrow
+  - Terrain
   layers:
   - Default
   - TransparentFX
@@ -15,9 +15,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Ground
-  - Ball
-  - Point
+  - 
+  - 
+  - 
   - 
   - 
   - 
