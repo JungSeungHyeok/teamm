@@ -3,7 +3,14 @@ guid: 470f0fc5490cfaa4f81e2fa53b84b24f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - fireSound: {instanceID: 0}
+  - ballCountText: {instanceID: 0}
+  - playerMovement: {instanceID: 0}
+  - scoreManager: {instanceID: 0}
+  - stoneManager: {instanceID: 0}
+  - powerSlider: {instanceID: 0}
+  - projectileArrow: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

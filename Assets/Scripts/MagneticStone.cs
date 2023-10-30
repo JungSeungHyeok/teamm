@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static StoneControler;
 
 public class MagneticStone : MonoBehaviour
 {
@@ -10,20 +8,22 @@ public class MagneticStone : MonoBehaviour
 
     public bool isActive = false; // 프리뷰 스톤에서의 자석기능 비활성화
 
-    public float magneticRadius = 10.0f;
-    public float magneticForce = 200.0f;
+    public float magneticRadius = 75.0f;
+    public float magneticForce = 2500.0f;
 
     private bool isMagnetActive = false;
-    public bool isIndicatorActive = false;
 
     private Rigidbody rb;
     public StoneControler stoneControler;
-    public GameObject magneticRadiusIndicator;  // 원 모양의 GameObject
-    
+
+    public GameObject particleEffect;
+
+    public AudioClip MagSound;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         StartCoroutine(CheckIfStopped());
 
         stoneControler = FindObjectOfType<StoneControler>();
@@ -47,18 +47,17 @@ public class MagneticStone : MonoBehaviour
                 continue;
             }
 
-            if (rb.velocity.magnitude < 2.0f)
+            if (rb.velocity.magnitude < 3.0f)
             {
                 currentState = StoneState.Stopped;
                 rb.isKinematic = true;
                 isMagnetActive = true;
-                isIndicatorActive = true;
+                GameObject particle = Instantiate(particleEffect, transform.position, Quaternion.identity);
 
                 yield return new WaitForSeconds(4.0f);
 
                 isMagnetActive = false;
                 rb.isKinematic = false;
-                isIndicatorActive = false;
                 break;
             }
         }
@@ -66,20 +65,23 @@ public class MagneticStone : MonoBehaviour
 
     public void FireStone()
     {
-        currentState = StoneState.Fired; // 쓰로우함수 호출되면 발사된 상태로 변경
+        currentState = StoneState.Fired;
+        StartCoroutine(ActivateMagnetAfterDelay(4.5f));
     }
 
-    private void Update()
+    IEnumerator ActivateMagnetAfterDelay(float delay)
     {
-        if (isIndicatorActive)
-        {
-            magneticRadiusIndicator.SetActive(true);
-            magneticRadiusIndicator.transform.localScale = new Vector3(magneticRadius, 1, magneticRadius);
-        }
-        else
-        {
-            magneticRadiusIndicator.SetActive(false);
-        }
+        yield return new WaitForSeconds(delay);
+
+        currentState = StoneState.Stopped;
+        rb.isKinematic = true;
+        isMagnetActive = true;
+        GameObject particle = Instantiate(particleEffect, transform.position, Quaternion.identity);
+
+        yield return new WaitForSeconds(4.0f);
+
+        isMagnetActive = false;
+        rb.isKinematic = false;
     }
 
 
@@ -97,6 +99,13 @@ public class MagneticStone : MonoBehaviour
 
         foreach (Collider nearbyObject in colliders)
         {
+            GameObject audioObject = new GameObject("MagSound");
+            AudioSource audioSourceOnNewObject = audioObject.AddComponent<AudioSource>();
+            audioSourceOnNewObject.clip = MagSound;
+            audioSourceOnNewObject.volume = 0.8f;
+            audioSourceOnNewObject.Play();
+            Destroy(audioObject, MagSound.length);
+
             Rigidbody rbNearby = nearbyObject.GetComponent<Rigidbody>();
             if (rbNearby != null)
             {
@@ -116,14 +125,14 @@ public class MagneticStone : MonoBehaviour
     }
 
 
-    public void ActivateMagnet()
-    {
-        isActive = true;
-    }
+    //public void ActivateMagnet()
+    //{
+    //    isActive = true;
+    //}
 
-    public void DeactivateMagnet()
-    {
-        isActive = false;
-    }
+    //public void DeactivateMagnet()
+    //{
+    //    isActive = false;
+    //}
 
 }

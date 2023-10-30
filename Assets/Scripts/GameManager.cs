@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) // 싱글턴
+        if (instance == null)
         {
             instance = this;
         }
@@ -24,15 +24,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴x
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R)) // 재시작
-        {
-            RestartGame();
-        }
+        DontDestroyOnLoad(gameObject);
     }
 
     public void RestartGame()
@@ -41,9 +33,24 @@ public class GameManager : MonoBehaviour
         currentState = GameState.Playing;
     }
 
+    public void TestSelectScene()
+    {
+        SceneManager.LoadScene("SelectScene");
+    }
+
     public void EndGame()
     {
         currentState = GameState.GameOver;
-        // 점수 화면 표시 로직 나중에
     }
+
+    //// 게임도중 재시작(R) 테스트 코드
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.R))
+    //    {
+    //        TestSelectScene();
+
+    //        // RestartGame();
+    //    }
+    //}
 }

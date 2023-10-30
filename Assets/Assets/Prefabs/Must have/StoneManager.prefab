@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &322532493984219394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5251817066797565719}
+  - component: {fileID: 5265288420634078362}
+  m_Layer: 0
+  m_Name: StoneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5251817066797565719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322532493984219394}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 513.15, y: 299.50003, z: -91.63932}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5265288420634078362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322532493984219394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 026966e8024c40442bd158f0c16ff66a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stonePrefabs:
+  - {fileID: 328105572803809303, guid: 11cef72f61943b040a3882d926d9139d, type: 3}
+  - {fileID: 1730523549803092587, guid: 76afee84f178a7e4ba386127e2aa977a, type: 3}
+  - {fileID: 940836045977027262, guid: 304345e2de751334db7fca472e657b04, type: 3}
+  - {fileID: 6763783928703909631, guid: 1a7def538c5ee984699d88ab063dfd1c, type: 3}
+  - {fileID: 5294179252060653693, guid: 1743deaa2ebe2fb4eadc3ece18d0f3d0, type: 3}
+  currentStonePrefab: {fileID: 328105572803809303, guid: 11cef72f61943b040a3882d926d9139d, type: 3}
+  stoneButtons:
+  - {fileID: 4952540441772953105, guid: 0183efcfebad81c4faf3716931fd80f3, type: 3}
+  - {fileID: 4952540441772953105, guid: be84181fdc6d0e84196a949145c400b2, type: 3}
+  - {fileID: 4952540441772953105, guid: 39947ff860a1d0a4aab7f68c83161a8e, type: 3}
+  - {fileID: 4952540441772953105, guid: b81eb27b027bf844f80d4f5af741dcea, type: 3}
+  - {fileID: 4952540441772953105, guid: a8964556376ecff449e9d7525e2f650d, type: 3}
+  stoneCountTexts:
+  - {fileID: 890919521363603675, guid: 6ed60f643c293bb4095b54192bee7aca, type: 3}
+  - {fileID: 890919521363603675, guid: 8bec3629c1f4da740a58e2efe4ed7394, type: 3}
+  - {fileID: 890919521363603675, guid: 75796c81774c17f44b0229a16cdab502, type: 3}
+  - {fileID: 890919521363603675, guid: e420efe0447f67045b55123e7b49bc44, type: 3}
+  - {fileID: 890919521363603675, guid: 12c42665e34e5ad43a1a1c94595abe03, type: 3}
+  maxBalls: 250
+  currentStoneType: 5
+  currentStoneIndex: 0
+  remainingBalls: 0

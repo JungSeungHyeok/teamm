@@ -15,9 +15,4 @@ public class DisplayTotalScore : MonoBehaviour
             totalScoreText.text = "Total Score: " + savedScore;
         }
     }
-
-    //public void Restart()
-    //{
-    //    StageManager.currentStage
-    //}
 }

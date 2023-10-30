@@ -4,18 +4,26 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Wall
   - Stone
+  - Wall
+  - AngleArrow
+  - Terrain
+  - ShinyBall
+  - ShinyStone
+  - Ground
+  - LeftSpawn
+  - RightSpawn
+  - ExplosiveStone
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ball
   - Water
   - UI
-  - Ground
-  - Ball
-  - Point
+  - 
+  - 
+  - 
   - 
   - 
   - 

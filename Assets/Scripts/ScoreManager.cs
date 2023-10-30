@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //
 public class ScoreManager : MonoBehaviour
 {
@@ -11,8 +12,13 @@ public class ScoreManager : MonoBehaviour
         public int score;
     }
 
+    private int winScore;
+
+    //public GameObject particleEffect;
+    //private GameObject effectInstance;
+
     public List<ScoreLineInfo> scoreLines;
-    public float stopThreshold = 0.1f;
+    public float stopThreshold = 500f;
     public TextMeshProUGUI scoreText;
 
     public int totalScore = 0;
@@ -20,14 +26,32 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
-        
         UpdateScoreText();
+
+        RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
+
+        Vector3 screenPoint = new Vector3(canvasRect.rect.xMin, canvasRect.rect.yMax, 0);
+
+        Camera mainCamera = Camera.main;
+        Vector3 worldPoint;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRect, screenPoint, mainCamera, out worldPoint);
+
+        winScore = Stage.GetStageWinScore(SceneManager.GetActiveScene().name);
     }
 
     private void FixedUpdate()
     {
         GameObject[] stones = GameObject.FindGameObjectsWithTag("Stone");
+        GameObject[] StickyStone = GameObject.FindGameObjectsWithTag("StickyStone");
+        GameObject[] shinyStones = GameObject.FindGameObjectsWithTag("ShinyStone");
 
+        StoneScoreTypes(stones, 1);
+        StoneScoreTypes(StickyStone, 1);
+        StoneScoreTypes(shinyStones, 2);
+    }
+
+    private void StoneScoreTypes(GameObject[] stones, int multiple)
+    {
         foreach (GameObject stone in stones)
         {
             Rigidbody stoneRb = stone.GetComponent<Rigidbody>();
@@ -49,7 +73,7 @@ public class ScoreManager : MonoBehaviour
 
                     if (isInside)
                     {
-                        currentStoneScore = line.score;
+                        currentStoneScore = line.score * multiple;
                         break;
                     }
                 }
@@ -72,11 +96,12 @@ public class ScoreManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + totalScore;
+            string currentStage = Stage.CurrentStage();
+            scoreText.text = "Score: " + totalScore + " " + "/ " + Stage.stageWinScores[Stage.CurrentStage()];
         }
     }
 
-    public void UpdateTotalScore(int newScore) // 다른 씬에 점수 전달
+    public void UpdateTotalScore(int newScore)
     {
         totalScore += newScore;
         PlayerPrefs.SetInt("TotalScore", totalScore);
